@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RF Master Tool 使用說明</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #f3f4f6; margin: 0; padding: 16px; color: #1f2937; }
+  .card { background: #fff; border-radius: 12px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+  h1 { font-size: 1.4rem; color: #2563eb; margin: 0 0 4px 0; }
+  h2 { font-size: 1rem; color: #1f2937; margin: 0 0 12px 0; display: flex; align-items: center; gap: 6px; }
+  .step-num { background: #2563eb; color: #fff; border-radius: 50%; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; flex-shrink: 0; }
+  .url-box { background: #eff6ff; border: 1.5px solid #93c5fd; border-radius: 8px; padding: 10px 14px; font-family: monospace; font-size: 0.9rem; color: #1d4ed8; word-break: break-all; margin: 8px 0; }
+  .tip { background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 0 8px 8px 0; padding: 10px 14px; font-size: 0.85rem; color: #92400e; margin: 10px 0; }
+  .warn { background: #fef2f2; border-left: 4px solid #ef4444; border-radius: 0 8px 8px 0; padding: 10px 14px; font-size: 0.85rem; color: #991b1b; margin: 10px 0; }
+  .ok { background: #f0fdf4; border-left: 4px solid #22c55e; border-radius: 0 8px 8px 0; padding: 10px 14px; font-size: 0.85rem; color: #166534; margin: 10px 0; }
+  p { margin: 6px 0; font-size: 0.92rem; line-height: 1.6; }
+  ul { margin: 6px 0 6px 18px; padding: 0; }
+  li { font-size: 0.92rem; line-height: 1.8; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.78rem; font-weight: 700; }
+  .badge-blue { background: #dbeafe; color: #1d4ed8; }
+  .badge-green { background: #dcfce7; color: #166534; }
+  .badge-purple { background: #ede9fe; color: #6d28d9; }
+  .badge-orange { background: #ffedd5; color: #c2410c; }
+  .badge-red { background: #fee2e2; color: #991b1b; }
+  hr { border: 0; border-top: 1px solid #e5e7eb; margin: 14px 0; }
+  .sub { color: #6b7280; font-size: 0.82rem; margin-top: 2px; }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <h1>🚩 RF Master Tool</h1>
+  <p class="sub">聯盟管理自動化工具 · 使用說明書</p>
+  <hr>
+  <p>開啟網址：</p>
+  <div class="url-box">https://esc8964.github.io/rf_master_tool_Oola/</div>
+  <div class="tip">💡 可加入書籤方便日後使用</div>
+</div>
+
+<div class="card">
+  <h2><span class="step-num">1</span> 初次設定：帳號列表</h2>
+  <p>點開 <strong>⚙️ 工作帳號列表</strong>，填入你的工作帳號（每行一筆）：</p>
+  <div class="url-box" style="font-size:0.82rem;">帳號,密碼<br>帳號,密碼</div>
+  <p>點開 <strong>🔑 管理員帳號列表</strong>，填入管理員帳號（每行一筆）：</p>
+  <div class="url-box" style="font-size:0.82rem;">聯盟ID,帳號,密碼<br>聯盟ID,帳號,密碼</div>
+  <p>填好後點 <span class="badge badge-blue">💾 儲存並更新列表</span>，下拉選單會自動更新。</p>
+  <div class="ok">✅ 設定會自動儲存在瀏覽器，下次開啟不需要重新填寫</div>
+</div>
+
+<div class="card">
+  <h2><span class="step-num">2</span> 登入管理員取得伺服器資料</h2>
+  <p>切換到 <strong>🚩 聯盟管理</strong> 頁籤：</p>
+  <ul>
+    <li>從下拉選單選擇一個管理員帳號</li>
+    <li>點 <span class="badge badge-blue">登入</span></li>
+    <li>登入成功後會顯示聯盟 ID、主力位置、勢力範圍</li>
+    <li>排行榜會自動載入全伺服器 Top 20 聯盟</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h2><span class="step-num">3</span> 勾選聯盟 · 批次執行</h2>
+  <p>排行榜載入後，每個聯盟旁邊會出現勾選框：</p>
+  <ul>
+    <li>勾選 <span style="color:#dc2626;">🔑 紅色鑰匙</span> 的聯盟（代表有管理員帳號可用）</li>
+    <li>勾好後出現兩個按鈕：</li>
+  </ul>
+  <p>
+    <span class="badge badge-purple">📥 匯入至管理員批次</span> → 自動跳到聯盟管理，開始批次放行盟友<br><br>
+    <span class="badge badge-blue">📥 匯入至每日任務</span> → 自動跳到每日任務，開始批次領取聯盟獎勵
+  </p>
+  <div class="ok">✅ 需要分別開兩個視窗(一個為工作帳號'一個為管理員帳號)匯入後會自動開始執行，不需要再手動按開始</div>
+</div>
+
+<div class="card">
+  <h2><span class="step-num">4</span> 執行中的操作</h2>
+  <p>批次執行時可以使用以下按鈕：</p>
+  <ul>
+    <li><span class="badge badge-orange">⏭️ 跳過</span>：遇到滿員、無法登入（非領袖副手帳號）或其他問題時，點跳過處理下一個聯盟</li>
+    <li><span class="badge badge-red">⏹️ 停止</span>：中途停止所有任務</li>
+  </ul>
+  <div class="tip">💡 常見需要跳過的情況：聯盟已滿員、帳號身份不足（需要領袖或副手才能放行）</div>
+</div>
+
+<div class="card">
+  <h2><span class="step-num">5</span> 手動單一聯盟操作</h2>
+  <p>不想批次執行，也可以手動操作單一聯盟：</p>
+  <ul>
+    <li><strong>每日任務</strong>：直接輸入聯盟 ID，點執行</li>
+    <li><strong>聯盟管理</strong>：直接輸入聯盟 ID，選擇要執行的動作</li>
+  </ul>
+  <div class="tip">💡 批次執行前記得先點 <strong>💾 儲存並更新列表</strong>，否則可能使用舊資料</div>
+</div>
+
+<div class="card">
+  <h2><span class="step-num">6</span> 注意事項</h2>
+  <div class="warn">⚠️⚠️⚠️ 特別注意！！！如果發生大量錯誤，請停止程序，避免被官方辨識</div>
+  <div class="warn">⚠️⚠️ 按下「🗑️ 重置設定」會清除所有儲存資料，恢復預設值，請謹慎操作</div>
+  <div class="tip">💡 如果遇到異常，可以點右上角「🔄 重新載入」重整頁面</div>
+  <div class="ok">✅ 瀏覽器會自動儲存所有設定，下次開啟即可直接使用</div>
+
+</div>
+
+</body>
+</html>
