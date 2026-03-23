@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
-  <title>RF Master Tool Pro v3.9_Oola</title>
+  <title>RF Master Tool Pro v4.0</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <style>
     :root {
@@ -241,7 +241,7 @@
 
   <div class="header">
     <h3>
-        RF Master Tool <span class="ver-badge">Pro v3.9_Oola</span>
+        RF Master Tool <span class="ver-badge">Pro v4.0</span>
     </h3>
     <button class="header-btn btn-reload" onclick="window.location.reload()">🔄 重新載入</button>
     <button class="header-btn btn-reset" onclick="RF.actions.factoryReset()">🗑️ 重置設定</button>
@@ -469,7 +469,7 @@
         </div>
         
         <div id="leaderboardContainer">
-             <div style="font-size: 0.85rem; color: #92400e; text-align: center; padding: 10px;">(登入後自動載入 Top 20)</div>
+             <div style="font-size: 0.85rem; color: #92400e; text-align: center; padding: 10px;">(登入後自動載入全部排行榜)</div>
         </div>
         <button onclick="RF.actions.fetchLeaderboard()" class="btn-orange" style="width:100%; margin: 10px 0;">🏆 重新整理排行榜</button>
         <hr style="border:0; border-top:1px solid #fde68a; margin:15px 0;">
@@ -2198,7 +2198,10 @@ const RF = {
                 let countA = a.control_cities || (a.city?.control_cities || 0);
                 let countB = b.control_cities || (b.city?.control_cities || 0);
                 return countB - countA;
-            }).slice(0, 20);
+            }).filter(u => {
+                const count = u.control_cities || (u.city?.control_cities || 0);
+                return count > 0;
+            }).slice(0, 100);
 
             const knownUnionIds = new Set(
                 RF.state.adminAccountList
