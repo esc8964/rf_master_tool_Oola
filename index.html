@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
-  <title>RF Master Tool Pro v3.8_Oola</title>
+  <title>RF Master Tool Pro v3.9_Oola</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <style>
     :root {
@@ -175,6 +175,51 @@
 </head>
 <body>
 
+<!-- 密碼鎖 -->
+<div id="pwLock" style="position:fixed;inset:0;background:#1e1b4b;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;">
+  <div style="font-size:2rem;">🔐</div>
+  <div style="color:#fff;font-size:1.2rem;font-weight:700;">RF Master Tool</div>
+  <div style="color:#a5b4fc;font-size:0.85rem;margin-bottom:4px;">請輸入存取密碼</div>
+  <input id="pwInput" type="password" placeholder="密碼" autocomplete="off"
+    style="width:220px;padding:12px;border-radius:8px;border:2px solid #4f46e5;font-size:1rem;text-align:center;outline:none;background:#f0f0ff;"
+    onkeydown="if(event.key==='Enter') checkPw()">
+  <button onclick="checkPw()"
+    style="width:220px;padding:12px;background:#4f46e5;color:#fff;border:none;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;">
+    進入
+  </button>
+  <div id="pwErr" style="color:#f87171;font-size:0.85rem;min-height:1.2em;"></div>
+</div>
+
+<script>
+  // ★ 在這裡修改密碼 ★
+  const ACCESS_PASSWORD = "oola";
+
+  function checkPw() {
+    const input = document.getElementById('pwInput').value;
+    if (input === ACCESS_PASSWORD) {
+      document.getElementById('pwLock').style.display = 'none';
+      localStorage.setItem('rf_auth', ACCESS_PASSWORD);
+    } else {
+      const err = document.getElementById('pwErr');
+      err.textContent = '密碼錯誤，請再試一次';
+      document.getElementById('pwInput').value = '';
+      document.getElementById('pwInput').focus();
+      setTimeout(() => err.textContent = '', 2000);
+    }
+  }
+
+  // 已驗證過則直接跳過
+  if (localStorage.getItem('rf_auth') === ACCESS_PASSWORD) {
+    document.getElementById('pwLock').style.display = 'none';
+  }
+  // 頁面載入後自動 focus 輸入框
+  window.addEventListener('load', () => {
+    if (document.getElementById('pwLock').style.display !== 'none') {
+      setTimeout(() => document.getElementById('pwInput').focus(), 100);
+    }
+  });
+</script>
+
   <div id="toast-container"></div>
 
   <div id="resetModal" class="modal-overlay">
@@ -196,7 +241,7 @@
 
   <div class="header">
     <h3>
-        RF Master Tool <span class="ver-badge">Pro v3.8_Oola</span>
+        RF Master Tool <span class="ver-badge">Pro v3.9_Oola</span>
     </h3>
     <button class="header-btn btn-reload" onclick="window.location.reload()">🔄 重新載入</button>
     <button class="header-btn btn-reset" onclick="RF.actions.factoryReset()">🗑️ 重置設定</button>
@@ -475,7 +520,7 @@ const RF = {
 
     defaults: {
         general: `kaz666,kaz666\nred666,red666`,
-        admin: `2696,ha01,forlottery\n阿嬤01,grandma01,grandma01\n阿嬤02,grandma02,grandma02\n阿嬤03,grandma03,grandma03\n阿嬤04,grandma04,grandma04\n阿嬤05,grandma05,grandma05\n阿嬤06\n5663,rebelwaiter_1/rebelwaiter\n7221,EE02,EE02\n7220,EE01,EE01\n12364,EE03,EE03\n5654,twdoorkeeper,twdoorkeeper\n1087,opencat,opencat\n6143,hkdoorkeeper,hkdoorkeeper\n4172,grandma01,grandma01\n13979,westkeeper2,westkeeper2\n4937,key123,key321\n10150,key1234,key4321\n12368,redalertb,redalertb\n4987,kaz666,kaz666\n9621,grandma05,grandma05`,
+        admin: `2696,ha01,forlottery\n阿嬤01,grandma01,grandma01\n阿嬤02,grandma02,grandma02\n阿嬤03,grandma03,grandma03\n阿嬤04,grandma04,grandma04\n阿嬤05,grandma05,grandma05\n阿嬤06,grandma06,grandma06\n5663,rebelwaiter_1/rebelwaiter\n7221,EE02,EE02\n7220,EE01,EE01\n12364,EE03,EE03\n5654,twdoorkeeper,twdoorkeeper\n1087,opencat,opencat\n6143,hkdoorkeeper,hkdoorkeeper\n4172,grandma01,grandma01\n13979,westkeeper2,westkeeper2\n4937,key123,key321\n10150,key1234,key4321\n12368,redalertb,redalertb\n4987,kaz666,kaz666\n9621,grandma05,grandma05`,
         whitelist: `855719, 855731`,
         levels: `474,東沙,紅包\n20,馬尼拉,高級重擊符文\n40,九龍城,高級匕首符文\n50,屯門,高級法器符文、銅錢*10/5/1\n39,赤柱,資源*90\n54,赤鱲角,高級高等爆裂符文\n29,孟賽,高級槍械符文\n306,西雙版納,高級弓弩符文\n55,澳門,徵才告示*20/2、銅錢*/5/1`,
         dailyUnions: `8964\n2758\n1450`
