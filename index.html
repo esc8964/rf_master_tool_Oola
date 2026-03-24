@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
-  <title>RF Master Tool Pro v4.0</title>
+  <title>RF Master Tool Pro v4.2</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <style>
     :root {
@@ -176,6 +176,7 @@
 <body>
 
 <!-- 密碼鎖 -->
+
 <div id="pwLock" style="position:fixed;inset:0;background:#1e1b4b;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;">
   <div style="font-size:2rem;">🔐</div>
   <div style="color:#fff;font-size:1.2rem;font-weight:700;">RF Master Tool</div>
@@ -241,7 +242,7 @@
 
   <div class="header">
     <h3>
-        RF Master Tool <span class="ver-badge">Pro v4.0</span>
+        RF Master Tool <span class="ver-badge">Pro v4.2</span>
     </h3>
     <button class="header-btn btn-reload" onclick="window.location.reload()">🔄 重新載入</button>
     <button class="header-btn btn-reset" onclick="RF.actions.factoryReset()">🗑️ 重置設定</button>
@@ -583,9 +584,10 @@ const RF = {
             let styleAttr = "";
             if(style === "gold") styleAttr = `style="color:#f59e0b; font-weight:bold; font-size:1.05rem;"`;
             
+            const isAtBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 50;
             el.insertAdjacentHTML('beforeend', `<div ${styleAttr}><span style="color:#6b7280;margin-right:8px; font-weight:normal; font-size:0.85rem;">[${time}]</span>${msg}</div>`);
             if(el.children.length > 1000) el.removeChild(el.firstChild);
-            el.scrollTop = el.scrollHeight;
+            if (isAtBottom) el.scrollTop = el.scrollHeight;
         },
         setLoading: (btnId, isLoading) => {
             const btn = document.getElementById(btnId);
@@ -1424,8 +1426,14 @@ const RF = {
                     if (RF.state.skipCurrentUnion) break;
                     RF.ui.log(`👉 ${acc.email}`);
 
-                    if (await RF.actions.authWithRetry(acc)) {
-                        if (isFirstUnion && config.reward) {
+                    const loginOk = await RF.actions.authWithRetry(acc);
+                    if (!loginOk) {
+                        RF.ui.log(`⛔ 登入失敗3次，跳過聯盟 [${targetUnionId}]`);
+                        RF.state.skipCurrentUnion = true;
+                        break;
+                    }
+
+                    if (isFirstUnion && config.reward) {
                             const ref = RF.utils.nextRef();
                             RF.state.socket.send(JSON.stringify(["6",ref,RF.state.topic,"collect_bundle",{"reference_type":"Daily Bundle"}]));
                             const res = await RF.core.waitForMessage(m => m[1]===ref, 2000);
@@ -1451,7 +1459,6 @@ const RF = {
                             const success = await RF.actions.handleDailyUnion(Number(targetUnionId), config.stayInUnion);
                             if (!success) RF.ui.log("⛔ 聯盟任務中斷");
                         }
-                    }
                     await RF.utils.sleep(1500);
                 }
 
@@ -2080,7 +2087,7 @@ const RF = {
 
         handleDailyUnion: async (targetUnionId, stayInUnion) => {
             let retryCount = 0;
-            const maxRetries = 20; 
+            const maxRetries = 3; 
 
             while (RF.state.isRunning && !RF.state.skipCurrentUnion) {
                 if (RF.state.socket && RF.state.socket.readyState !== WebSocket.OPEN) {
@@ -2119,7 +2126,8 @@ const RF = {
                 }
 
                 if (retryCount >= maxRetries) {
-                    RF.ui.log("⛔ 達到最大重試次數，停止程序");
+                    RF.ui.log("⛔ 達到最大重試次數，跳至下一個聯盟");
+                    RF.state.skipCurrentUnion = true;
                     return false;
                 }
 
@@ -2142,9 +2150,9 @@ const RF = {
                 const isOk = reply && reply[4].status === "ok";
 
                 if (isOk || reason.includes("already applied")) {
-                    RF.ui.log("⏳ 已申請，等待審核/入盟 (60秒超時)...");
+                    RF.ui.log("⏳ 已申請，等待審核/入盟 (30秒超時)...");
                     let joined = false;
-                    for(let t=0; t<30; t++) {
+                    for(let t=0; t<15; t++) {
                         if(!RF.state.isRunning || RF.state.skipCurrentUnion) return false;
                         await RF.utils.sleep(2000);
                         if(!RF.state.isRunning || RF.state.skipCurrentUnion) return false;
@@ -2157,7 +2165,8 @@ const RF = {
                     
                     if (joined) continue; 
                     else {
-                        RF.ui.log("❌ 等待審核超時，跳過");
+                        RF.ui.log("❌ 等待審核超時，跳至下一個聯盟");
+                        RF.state.skipCurrentUnion = true;
                         return false; 
                     }
                 } 
