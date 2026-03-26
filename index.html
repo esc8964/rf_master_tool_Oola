@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
-  <title>RF Master Tool Pro v4.2</title>
+  <title>RF Master Tool Pro v4.7</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <style>
     :root {
@@ -242,7 +242,7 @@
 
   <div class="header">
     <h3>
-        RF Master Tool <span class="ver-badge">Pro v4.2</span>
+        RF Master Tool <span class="ver-badge">Pro v4.7</span>
     </h3>
     <button class="header-btn btn-reload" onclick="window.location.reload()">🔄 重新載入</button>
     <button class="header-btn btn-reset" onclick="RF.actions.factoryReset()">🗑️ 重置設定</button>
@@ -264,15 +264,21 @@
   </div>
 
   <div id="tabRune" class="tab-content section">
-    <button class="collapsible" onclick="RF.ui.toggleCollapsible(this)">🗡️ 關卡列表設定</button>
+    <button class="collapsible" onclick="RF.ui.toggleCollapsible(this)">👥 聯盟小號列表</button>
+    <div class="coll-content">
+        <textarea id="secondaryInput" placeholder="帳號,密碼（每行一筆）" style="margin-top:5px;"></textarea>
+        <button onclick="RF.actions.saveAccounts('secondary')" class="btn-blue" style="width:100%; margin-bottom:10px;">💾 儲存並更新列表</button>
+    </div>
+
+    <label>選擇帳號：</label>
+    <select id="runeAccountSelect"><option value="">(請先設定帳號)</option></select>
+
+    <button class="collapsible" onclick="RF.ui.toggleCollapsible(this)" style="margin-top:10px;">🗡️ 關卡列表設定</button>
     <div class="coll-content">
         <textarea id="levelInput" placeholder="CityID, 城市名稱, 道具&#10;20, 阿拉木圖, 重擊" style="margin-top:5px; height: 100px;"></textarea>
         <button onclick="RF.actions.saveLevels()" class="btn-blue" style="width:100%; margin-bottom:10px;">💾 儲存並更新列表</button>
     </div>
 
-    <label>選擇帳號：</label>
-    <select id="runeAccountSelect"><option value="">(請先設定帳號)</option></select>
-    
     <label style="margin-top:10px; display:block;">選擇關卡 (自動填入 ID)：</label>
     <select id="runeLevelSelect" onchange="RF.actions.onLevelChange()">
         <option value="">-- 自定義 ID --</option>
@@ -295,6 +301,11 @@
   </div>
 
   <div id="tabDaily" class="tab-content section">
+    <button class="collapsible" onclick="RF.ui.toggleCollapsible(this)">👥 聯盟小號列表</button>
+    <div class="coll-content">
+        <textarea id="secondaryInputDaily" placeholder="帳號,密碼（每行一筆）" style="margin-top:5px;"></textarea>
+        <button onclick="RF.actions.saveAccounts('secondary')" class="btn-blue" style="width:100%; margin-bottom:10px;">💾 儲存並更新列表</button>
+    </div>
     <label>選擇帳號：</label>
     <select id="dailyAccountSelect"><option value="">(請先設定帳號)</option></select>
     
@@ -357,6 +368,11 @@
   </div>
 
   <div id="tabUnion" class="tab-content section">
+    <button class="collapsible" onclick="RF.ui.toggleCollapsible(this)">👥 聯盟小號列表</button>
+    <div class="coll-content">
+        <textarea id="secondaryInputUnion" placeholder="帳號,密碼（每行一筆）" style="margin-top:5px;"></textarea>
+        <button onclick="RF.actions.saveAccounts('secondary')" class="btn-blue" style="width:100%; margin-bottom:10px;">💾 儲存並更新列表</button>
+    </div>
     <label>選擇帳號：</label>
     <select id="unionAccountSelect"><option value="">(請先設定帳號)</option></select>
     <div class="flex-row" style="margin:15px 0;">
@@ -414,6 +430,43 @@
         <div style="padding:20px; text-align:center; color:#9ca3af;">(請先登入並點選查詢)</div>
     </div>
 
+    <div style="background: #fffbeb; padding: 15px; border-radius: 8px; border: 1px solid #fde68a;">
+        <h4 style="margin: 0 0 10px 0; color: #92400e; font-size: 1rem;">📊 聯盟排行榜</h4>
+        
+        <div style="display:flex; gap:10px; margin: 5px 0 10px 0;">
+            <button onclick="RF.actions.importCheckedUnions('admin')" class="btn-purple" style="flex:1; padding: 10px; font-size: 0.85rem;">📥 匯入至管理員批次</button>
+            <button onclick="RF.actions.importCheckedUnions('daily')" class="btn-blue" style="flex:1; padding: 10px; font-size: 0.85rem;">📥 匯入至每日任務</button>
+        </div>
+        
+        <div id="leaderboardContainer">
+             <div style="font-size: 0.85rem; color: #92400e; text-align: center; padding: 10px;">(登入後自動載入全部排行榜)</div>
+        </div>
+        <button onclick="RF.actions.fetchLeaderboard()" class="btn-orange" style="width:100%; margin: 10px 0;">🏆 重新整理排行榜</button>
+        <hr style="border:0; border-top:1px solid #fde68a; margin:15px 0;">
+        <div class="flex-row">
+            <input type="text" id="searchUnionId" placeholder="輸入聯盟 ID 或 據點名稱" style="margin-bottom:0; background: #fff;">
+            <button onclick="RF.actions.queryUnionInfo()" class="btn-dark" style="width: auto;">🔍 查詢</button>
+        </div>
+        <div id="searchResult" style="margin-top: 8px; font-size: 0.9rem; font-weight: 600; color: #1f2937;"></div>
+    </div>
+
+    <div class="auto-gate-panel" style="margin-bottom: 15px; margin-top: 15px;">
+        <div class="auto-gate-header">
+            <span>🚪 自動門 (Auto-Gate) </span>
+            <span id="gateStatus" style="font-size:0.8rem; background:#fff; padding:2px 6px; border-radius:4px;">待機中</span>
+        </div>
+        <div class="flex-row">
+            <label>模式:</label>
+            <select id="autoGateMode" onchange="RF.actions.saveGateSettings()" style="margin-bottom:0;">
+                <option value="OFF">🔴 關閉 (Manual)</option>
+                <option value="WHITELIST" selected>📜 白名單 (零輪詢監聽)</option>
+                <option value="ALL">🟢 所有玩家 (零輪詢監聽)</option>
+            </select>
+        </div>
+        <textarea id="whitelistInput" placeholder="輸入允許的玩家 ID (User ID)&#10;例: 123456, 789012&#10;(多筆請換行或用逗號分隔)" style="height:75px; margin-top:10px;" oninput="RF.actions.saveGateSettings()"></textarea>
+        <div style="font-size:0.78rem; color:#92400e; margin-top:4px;">＊最後一名白名單 ID 自動觸發切換聯盟</div>
+    </div>
+
     <div style="background: #e0f2fe; padding: 15px; border-radius: 8px; border: 1px solid #7dd3fc; margin-bottom: 15px;">
         <h4 style="margin: 0 0 10px 0; color: #0369a1; font-size: 1.05rem;">🚀 管理員批次巡邏 (自動門)</h4>
         
@@ -443,43 +496,6 @@
             </button>
         </div>
     </div>
-
-    <div class="auto-gate-panel" style="margin-bottom: 15px;">
-        <div class="auto-gate-header">
-            <span>🚪 自動門 (Auto-Gate) </span>
-            <span id="gateStatus" style="font-size:0.8rem; background:#fff; padding:2px 6px; border-radius:4px;">待機中</span>
-        </div>
-        <div class="flex-row">
-            <label>模式:</label>
-            <select id="autoGateMode" onchange="RF.actions.saveGateSettings()" style="margin-bottom:0;">
-                <option value="OFF">🔴 關閉 (Manual)</option>
-                <option value="WHITELIST" selected>📜 白名單 (零輪詢監聽)</option>
-                <option value="ALL">🟢 所有玩家 (零輪詢監聽)</option>
-            </select>
-        </div>
-        <textarea id="whitelistInput" placeholder="輸入允許的玩家 ID (User ID)&#10;例: 123456, 789012&#10;(多筆請換行或用逗號分隔)" style="height:75px; margin-top:10px;" oninput="RF.actions.saveGateSettings()"></textarea>
-        <div style="font-size:0.78rem; color:#92400e; margin-top:4px;">＊最後一名白名單 ID 自動觸發切換聯盟</div>
-    </div>
-
-    <div style="background: #fffbeb; padding: 15px; border-radius: 8px; border: 1px solid #fde68a;">
-        <h4 style="margin: 0 0 10px 0; color: #92400e; font-size: 1rem;">📊 聯盟排行榜</h4>
-        
-        <div style="display:flex; gap:10px; margin: 5px 0 10px 0;">
-            <button onclick="RF.actions.importCheckedUnions('admin')" class="btn-purple" style="flex:1; padding: 10px; font-size: 0.85rem;">📥 匯入至管理員批次</button>
-            <button onclick="RF.actions.importCheckedUnions('daily')" class="btn-blue" style="flex:1; padding: 10px; font-size: 0.85rem;">📥 匯入至每日任務</button>
-        </div>
-        
-        <div id="leaderboardContainer">
-             <div style="font-size: 0.85rem; color: #92400e; text-align: center; padding: 10px;">(登入後自動載入全部排行榜)</div>
-        </div>
-        <button onclick="RF.actions.fetchLeaderboard()" class="btn-orange" style="width:100%; margin: 10px 0;">🏆 重新整理排行榜</button>
-        <hr style="border:0; border-top:1px solid #fde68a; margin:15px 0;">
-        <div class="flex-row">
-            <input type="text" id="searchUnionId" placeholder="輸入聯盟 ID 或 據點名稱" style="margin-bottom:0; background: #fff;">
-            <button onclick="RF.actions.queryUnionInfo()" class="btn-dark" style="width: auto;">🔍 查詢</button>
-        </div>
-        <div id="searchResult" style="margin-top: 8px; font-size: 0.9rem; font-weight: 600; color: #1f2937;"></div>
-    </div>
   </div>
 
   <h3 style="margin-left: 1rem; margin-top: 1.5rem;">System Log</h3>
@@ -503,7 +519,8 @@ const RF = {
         refCounter: 13, heartbeatInterval: null, isRunning: false,
         applicantTimer: null,
         
-        generalAccountList: [], adminAccountList: [],
+        generalAccountList: [], adminAccountList: [], secondaryAccountList: [],
+        activeWorkList: [], // 目前下拉選單對應的帳號列表（general 或 secondary）
         currentAdminUnionId: null, unionDataCache: [], currentUnionLeaderId: null,
         currentAccount: null, 
         
@@ -520,11 +537,12 @@ const RF = {
     },
 
     defaults: {
-        general: `kaz666,kaz666\nred666,red666`,
+        general: `grandma01,grandma01\ngrandma02,grandma02`,
         admin: `2696,ha01,forlottery\n阿嬤01,grandma01,grandma01\n阿嬤02,grandma02,grandma02\n阿嬤03,grandma03,grandma03\n阿嬤04,grandma04,grandma04\n阿嬤05,grandma05,grandma05\n阿嬤06,grandma06,grandma06\n5663,rebelwaiter_1/rebelwaiter\n7221,EE02,EE02\n7220,EE01,EE01\n12364,EE03,EE03\n5654,twdoorkeeper,twdoorkeeper\n1087,opencat,opencat\n6143,hkdoorkeeper,hkdoorkeeper\n4172,grandma01,grandma01\n13979,westkeeper2,westkeeper2\n4937,key123,key321\n10150,key1234,key4321\n12368,redalertb,redalertb\n4987,kaz666,kaz666\n9621,grandma05,grandma05`,
         whitelist: `855719, 855731`,
         levels: `474,東沙,紅包\n20,馬尼拉,高級重擊符文\n40,九龍城,高級匕首符文\n50,屯門,高級法器符文、銅錢*10/5/1\n39,赤柱,資源*90\n54,赤鱲角,高級高等爆裂符文\n29,孟賽,高級槍械符文\n306,西雙版納,高級弓弩符文\n55,澳門,徵才告示*20/2、銅錢*/5/1`,
-        dailyUnions: `8964\n2758\n1450`
+        dailyUnions: `8964\n2758\n1450`,
+        secondary: `grandma03,grandma03\ngrandma04,grandma04`
     },
 
     utils: {
@@ -997,8 +1015,13 @@ const RF = {
             const adm = localStorage.getItem('rf_adm_acc') || RF.defaults.admin;
             document.getElementById('generalInput').value = gen;
             document.getElementById('adminInput').value = adm;
-            RF.actions.importAccounts(gen, 'general');
             RF.actions.importAccounts(adm, 'admin');
+
+            const sec = localStorage.getItem('rf_sec_acc') || RF.defaults.secondary;
+            RF.actions.importAccounts(sec, 'secondary');
+
+            // 工作帳號最後載入，確保下拉選單預設顯示工作帳號列表
+            RF.actions.importAccounts(gen, 'general');
             
             const gateMode = localStorage.getItem('rf_gate_mode') || 'WHITELIST'; 
             const whitelist = localStorage.getItem('rf_gate_list') || RF.defaults.whitelist;
@@ -1019,9 +1042,31 @@ const RF = {
             // v2.5 Admin Batch Lists
             const adminUnions = localStorage.getItem('rf_admin_unions') || "";
             document.getElementById('adminUnionListInput').value = adminUnions;
+
+            // 自動登入第一個管理員帳號並刷新排行榜
+            setTimeout(async () => {
+                if (RF.state.adminAccountList.length > 0) {
+                    const sel = document.getElementById('adminAccountSelect');
+                    if (!sel.value) sel.value = "0";
+                    RF.ui.log("🔄 自動登入管理員並刷新排行榜...");
+                    await RF.actions.adminLogin();
+                }
+            }, 800);
         },
 
         saveAccounts: (type) => {
+            if (type === 'secondary') {
+                const val = document.getElementById('secondaryInput').value;
+                localStorage.setItem('rf_sec_acc', val);
+                // 同步三個分頁的 textarea
+                ['secondaryInputDaily','secondaryInputUnion'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.value = val;
+                });
+                RF.actions.importAccounts(val, 'secondary');
+                RF.ui.toast("聯盟小號列表已儲存", "success");
+                return;
+            }
             const id = type === 'general' ? 'generalInput' : 'adminInput';
             const val = document.getElementById(id).value;
             localStorage.setItem(type === 'general' ? 'rf_gen_acc' : 'rf_adm_acc', val);
@@ -1038,6 +1083,20 @@ const RF = {
             const list = RF.utils.parseAccounts(text);
             if(type === 'general') {
                 RF.state.generalAccountList = list;
+                RF.state.activeWorkList = list; // 工作帳號成為作業依據
+                RF.ui.updateSelect('runeAccountSelect', list);
+                RF.ui.updateSelect('dailyAccountSelect', list);
+                RF.ui.updateSelect('unionAccountSelect', list);
+            } else if (type === 'secondary') {
+                RF.state.secondaryAccountList = list;
+                RF.state.activeWorkList = list; // 聯盟小號成為作業依據
+                // 同步三個分頁 textarea 內容
+                const val = text || '';
+                ['secondaryInput','secondaryInputDaily','secondaryInputUnion'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el && el.value !== val) el.value = val;
+                });
+                // 更新三個分頁的下拉帳號選單為聯盟小號
                 RF.ui.updateSelect('runeAccountSelect', list);
                 RF.ui.updateSelect('dailyAccountSelect', list);
                 RF.ui.updateSelect('unionAccountSelect', list);
@@ -1225,8 +1284,8 @@ const RF = {
                         const logMsg = `🎁 獲得: ${item.name} * ${qty}`;
 
                         const isRune = item.name.includes('符文') || item.item_type === 'weapon' || item.item_type === 'Weapon';
-                        const isBigMoney = item.name === '東方大陸銅錢' && qty >= 1000;
-                        const isBigPaper = item.name === '徵才告示' && qty >= 20;
+                        const isBigMoney = item.name === '東方大陸銅錢' && qty >= 10;
+                        const isBigPaper = item.name === '徵才告示' && qty >= 2;
 
                         if (isRune || isBigMoney || isBigPaper) {
                             RF.ui.log(logMsg, 'gold');
@@ -1760,7 +1819,7 @@ const RF = {
 
         getTargetAccounts: (selectId) => {
             const val = document.getElementById(selectId).value;
-            const list = (selectId === 'adminAccountSelect') ? RF.state.adminAccountList : RF.state.generalAccountList;
+            const list = (selectId === 'adminAccountSelect') ? RF.state.adminAccountList : RF.state.activeWorkList;
             if (val === "") return [];
             if (val === "ALL") return list.map((acc, idx) => ({...acc, index: idx}));
             return [{...list[parseInt(val)], index: parseInt(val)}];
@@ -2041,18 +2100,9 @@ const RF = {
                     if(sel) {
                         sel.value = 'ALL';
                         RF.ui.toggleUnionInput();
-                        
-                        const targetRow = document.getElementById('unionTaskRow');
-                        if(targetRow) {
-                            targetRow.scrollIntoView({behavior: "smooth", block: "center"});
-                            targetRow.style.border = "2px solid var(--primary)";
-                            targetRow.style.boxShadow = "0 0 10px rgba(37, 99, 235, 0.3)";
-                            setTimeout(() => { 
-                                targetRow.style.border = "1px solid #e5e7eb"; 
-                                targetRow.style.boxShadow = "0 1px 2px rgba(0,0,0,0.03)";
-                            }, 1500);
-                        }
                     }
+                    // 捲動到頁面最底部，方便觀察 log 和跳過按鈕
+                    setTimeout(() => window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'}), 200);
                     // 自動執行批量任務（領據點獎）
                     setTimeout(() => RF.actions.startDailyBatch(), 800);
                 }, 500);
@@ -2067,18 +2117,9 @@ const RF = {
                     if(sel) {
                         sel.value = 'ALL';
                         RF.ui.toggleAdminUnionInput();
-                        
-                        const targetRow = document.getElementById('adminTaskRow');
-                        if(targetRow) {
-                            targetRow.scrollIntoView({behavior: "smooth", block: "center"});
-                            targetRow.style.border = "2px solid var(--primary)";
-                            targetRow.style.boxShadow = "0 0 10px rgba(37, 99, 235, 0.3)";
-                            setTimeout(() => { 
-                                targetRow.style.border = "1px solid #7dd3fc"; 
-                                targetRow.style.boxShadow = "none";
-                            }, 1500);
-                        }
                     }
+                    // 捲動到頁面最底部，方便觀察 log 和跳過按鈕
+                    setTimeout(() => window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'}), 200);
                     // 自動執行開始批次放行
                     setTimeout(() => RF.actions.startAdminBatch(), 800);
                 }, 500);
